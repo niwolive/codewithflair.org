@@ -1,0 +1,126 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Practice 1 - An interactive board with React.js · Code With Flair</title><meta name="description" content="I write about my lifestyle as a nomad developer and challenge you with tech things I learn"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://codewithflair.org/atom.xml" title="Code With Flair"><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-92875977-1",'auto');ga('send','pageview');</script></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/inquiries/" target="_self" class="nav-list-link">INQUIRIES</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Practice 1 - An interactive board with React.js</h1><div class="post-info">Apr 15, 2017</div><div class="post-content"><!-- FIXME - link «enhanced» to an article explaining my approach to teaching via CWF -->
+<p><em>This post is enhanced for web development practice. You can solve a given problem directly in your browser through a selection of iterative tasks. Advice: Unless otherwise stated, attempt all tasks before expanding any of the solutions.</em></p>
+<div class="summary">
+<h4 id="practice-summary"><a class="header-anchor" href="#practice-summary">#</a>Practice summary</h4>
+<ul>
+<li><strong>Topics</strong> React.js</li>
+<li><strong>Level</strong> Newbie</li>
+<li><strong>Help, reactions etc...</strong> use #cwfpractice1 on Twitter</li>
+<li><strong>Prerequisite knowledge</strong>
+<ul>
+<li>Javascript fondamentals (ES6)</li>
+<li>React.js basics (<a href="https://facebook.github.io/react/docs/components-and-props.html" target="_blank" rel="external">Stateless &amp; Class-based components</a>, <a href="https://facebook.github.io/react/docs/state-and-lifecycle.html" target="_blank" rel="external">Dealing with state</a>)</li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- FIXME add Mastodon link? -->
+<!-- add https://facebook.github.io/react/docs/components-and-props.html -->
+<p>This first practice session will help you write simple React.js code that in a way that promotes reuse of components and ease of maintenance.</p>
+<p>We will build a simple board with inplace editing that allows us to add elements in each column without page reloads.<br>
+As far as the data to be represented, feel free to choose what you want. I chose to list some programming paradigms features. Here it goes:</p>
+<p><img src="https://res.cloudinary.com/codewithflair/image/upload/cdf/2017-04-13/interactive-board-4" alt=""></p>
+<a id="more"></a>
+<h2 id="structuring-components"><a class="header-anchor" href="#structuring-components">#</a>Structuring components</h2>
+<p>Before we get into coding, we need to think of a reasonable way to break down our UI into React components. I got started on the task for you and designed three different sketches that represent ways in which we could structure our interface.</p>
+<section class="instructions">
+<h2>Task 1</h2>
+<p><strong>Consider the three following designs and mentally elect the one that you would favour using for the design of our interface. Different colours stand for diferent instances of React components. Dashed lines <code>---</code> stand for UI elements that are part of the rendering of a parent React component.<br>
+ote: there may be more than one answer, just make sure you can justify your choice.</strong></p>
+<figure class="fig-options">
+  <div><img src="https://res.cloudinary.com/codewithflair/image/upload/l_text:Dosis_85_bold:A.,g_north_east,x_40,y_40,o_70/v1487914392/cdf/2017-04-13/sketch-header-component.jpg"></div>
+  <div><img src="https://res.cloudinary.com/codewithflair/image/upload/l_text:Dosis_85_bold:B.,g_north_east,x_40,y_40,o_70/v1487914392/cdf/2017-04-13/sketch-monochrome.jpg"></div>
+  <div><img src="https://res.cloudinary.com/codewithflair/image/upload/l_text:Dosis_85_bold:C.,g_north_east,x_40,y_40,o_70/v1487914392/cdf/2017-04-13/sketch-column-component.jpg"></div>
+  <figcaption></figcaption>
+</figure>
+<details>
+  <summary>Expand solution</summary>
+<p>First, note that there could be several other good solutions to the problem above. What I want to emphasize is that it is a widespread practice among beginers to skip this design effort entirely and default to <code>B.</code>. While this may seem like a minimal approach (e.g. you need <em>only</em> one component), it will make any work on the components much harder down the road. Properly structuring your components and defining a logic for how they communicate with one another is the key to making your code maintainable and reusable.</p>
+<p>Now, <code>A.</code> or <code>C.</code>?</p>
+<p>In <code>C.</code>, the layout is expressed the layout as a combination of three components: <code>&lt;Column/&gt;</code>, <code>&lt;List/&gt;</code> and <code>&lt;Board/&gt;</code>.<br>
+A Column is anything that has a header (e.g. « Programming paradigm features » or « Imperative » in the previous image) and a body (anything we want, including another column).</p>
+<p>In <code>A.</code> we go ahead and create a <code>&lt;Header/&gt;</code> component instead, that we will render in <code>&lt;Board/&gt;</code> and in <code>&lt;List/&gt;</code>.</p>
+<p>Now, one could argue for the one or the other. They both use 3 react components, 2 of which are used multiple times. <code>C.</code> has the advantage over <code>A.</code> of having to write the markup for the header only in one place (the <code>Column</code> component). The shallower encapsulation of components of solution <code>A.</code> could also be seen as an advantage.</p>
+<p>I personally chose <code>C.</code>. Why? It came to my mind first and I didn't find that using <code>A.</code> would bring any valuable benefit. Feel free to stick with <code>A.</code> or any other design you favor over these. For example you could use a variant of <code>A.</code> where <code>&lt;Header/&gt;</code> is just a simple <code>&lt;p&gt;</code> or <code>&lt;h3&gt;</code> tag. You would then have only two React components, which might be just as arguable in this case.</p>
+<p>In task 2 you will convert this conceptual mockup in stateless React code. Attempting to program by composing components and analysing the solution will help you get a feel of how much of an improvement that is over the « fit-all-into-one-component » approach.</p>
+</details>
+<hr>
+<h4 id="à-propos"><a class="header-anchor" href="#à-propos">#</a>À propos</h4>
+<p>Keeping our application tiny simplifies the work above. In richer applications, you might also want to create separate files/modules and define how they depend from one another.</p>
+</section>
+<h2 id="static-prototyping"><a class="header-anchor" href="#static-prototyping">#</a>Static prototyping</h2>
+<p>Great, now that we defined our compontent structure, we can get into prototyping it with React. At this stage, we're only interested in integrating the layout into a hierarchy of React components that can render in the browser. This later will be the base on which we will enable user interaction by handling events and state.</p>
+<section class="instructions">
+<h2>Task 2</h2>
+<p><strong>Implement a minimalist structure of React components for the design marked as <code>C.</code> in the previous task. Ignore the fact that the lists will be editable for now and have them contain a static list of items.<br>
+By the end of this task the editor's live preview should like this:</strong></p>
+<figure class="fig-options">
+  <div><img src="http://res.cloudinary.com/codewithflair/image/upload/v1492227050/cdf/2017-04-13/screenshot.png"></div>
+</figure>
+<p>Note: I loaded some basic CSS so you can focus fully on the React code. Just apply the <code>.board</code> class to your wrapper Column component (e.g. <code>&lt;Column className=&quot;board&quot;&gt;</code>). You only need to edit code in the « JS » tab.</p>
+<p><a class="jsbin-embed" href="http://jsbin.com/fodilik/embed?js,output" target="_blank" rel="external">JS Bin on jsbin.com</a><script src="http://static.jsbin.com/js/embed.min.js?3.41.10"></script></p>
+<details><summary>Expand solution (~15 lines of code)</summary>
+<p>Looking at our component structure from the previous task (version <code>C.</code>), it is clear that we need to implement three components: <code>Board</code>, <code>Column</code> and <code>List</code>.</p>
+<p>Here is the resulting code:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">const List = () =&gt; &lt;ul&gt;</div><div class="line">                     &lt;li&gt;item 1&lt;/li&gt;</div><div class="line">                     &lt;li&gt;item 2&lt;/li&gt;</div><div class="line">                   &lt;/ul&gt;</div><div class="line">const Column = props =&gt; </div><div class="line">  &lt;div&gt;&lt;p&gt;&#123;props.header&#125;&lt;/p&gt;&#123;props.children&#125;&lt;/div&gt;</div><div class="line"></div><div class="line">const Board = () =&gt; </div><div class="line">  &lt;Column header="Title"&gt;</div><div class="line">    &lt;Column header="Column 1"&gt;&lt;List/&gt;&lt;/Column&gt;</div><div class="line">    &lt;Column header="Column 2"&gt;&lt;List/&gt;&lt;/Column&gt;</div><div class="line">    &lt;Column header="Column 3"&gt;&lt;List/&gt;&lt;/Column&gt;</div><div class="line">    &lt;Column header="Column 4"&gt;&lt;List/&gt;&lt;/Column&gt;</div><div class="line">  &lt;/Column&gt;;</div><div class="line"></div><div class="line">ReactDOM.render(&lt;Board/&gt;, document.getElementById("app"));</div></pre></td></tr></table></figure>
+<p>An interesting aspect of version <code>C.</code> is that multiple instances of a Column are placed as the content for another Column in <code>Board</code>. Likewise <code>&lt;List/&gt;</code> is used as content for <code>&lt;Column/&gt;</code>. Both of these are possible thanks to our use of <code>{props.children}</code> in the <code>Column</code> function.</p>
+<p>You can also observe that there is no need to use a <code>React.Component</code> class here, are we do not need to manage any state. Simple functions, or « Stateless components » in the React terminology, serve all of our needs at this stage.</p>
+</details>
+<hr>
+<h4 id="à-propos-v2"><a class="header-anchor" href="#à-propos-v2">#</a>À propos</h4>
+<ul>
+<li>writing CSS at the static prototyping stage, before dealing with events and state, helps to structure styles according to the core elements of your interface, convieniently delaying the styling related to the nitty-gritty details of what changes on user interaction.</li>
+<li>you could also have added the HTML for the input field at this step</li>
+</ul>
+</section>
+<h2 id="events-and-state-fixme-and-lifecycle"><a class="header-anchor" href="#events-and-state-fixme-and-lifecycle">#</a>Events and state <!-- FIXME and LIFECYCLE --></h2>
+<p>Great, now we have the main layout of our interface, and we can look into making the lists interactive. To do this, we will need a way for the different lists to keep and update a <em>state</em>.</p>
+<section class="instructions">
+<h2>Task 3</h2>
+<p><strong>Make the lists editable so that the last element of each list will be rendered as an input field by default. Each entry will be persisted into a new <code>li</code> element upon press of the <code>Enter</code> key. The editor is preloaded with the recommended outcome from the previous task. Some changes and additions will be required.<br>
+By the end of this task you should have a full-featured interactive board.</strong></p>
+<details><summary>Hints</summary>
+<ul>
+<li>use a React.Component class.</li>
+</ul>
+<details><summary>More hints</summary>
+<ul>
+<li>If the method called by <code>onKeyPress</code> takes <code>event</code> as its argument, the initial element on which the event was triggered can be accessed with <code>event.target</code>.</li>
+</ul>
+<!--FIXMEdetails><summary>One last hint</summary>
+
+- The lifecycle method ` ` can be used to trigger code that should be done ...
+</details-->
+</details>
+</details>
+<p><a class="jsbin-embed" href="http://jsbin.com/damarus/embed" target="_blank" rel="external">JS Bin on jsbin.com</a><script src="http://static.jsbin.com/js/embed.min.js?3.41.10"></script></p>
+<details><summary>Expand solution</summary>
+<p>Here is the full code of my solution. Your solution may be quite different and just as good (or better?). Read comments within and after the JSBin snippet for some insights.</p>
+<p><a class="jsbin-embed" href="http://jsbin.com/mujuri/embed" target="_blank" rel="external">JS Bin on jsbin.com</a></p>
+<script src="http://static.jsbin.com/js/embed.min.js?3.41.10"></script>
+<p>If some of the things seem magic in here, the best place to look into is probably the <a href="https://facebook.github.io/react/docs/state-and-lifecycle.html" target="_blank" rel="external">State and lifecycle</a> chapter of the React documentation.</p>
+<p>We use the List component <code>props</code> to initialise a state that will then be updated everytime we modify an input field rendered by this component. Changing the state with <code>setState</code> allows the List component to call <code>render</code>, hence updating the list of items generated by with the use of the <code>map</code> function.<br>
+Note the need to bind the current <code>this</code> context to the method of the event handler in the constructor. This is due to the way javascript deals with inheritance. See <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/this" target="_blank" rel="external">this Mozilla Developer Network reference page </a> for more information on the topic.</p>
+</details>
+<hr>
+<h4 id="à-propos-v3"><a class="header-anchor" href="#à-propos-v3">#</a>À propos</h4>
+<p>State could be dealt with in several way. In this practice session, I chose to keep with React basics and managed the state directly within the List component. It works well for our app in regard of its size. In future practice, we will see how different patterns can be used for managing state (in React and beyond), notably by decoupling state from the components that use them.</p>
+</section>
+<p>Great! The practice is over. If you haven't checked my solutions already, you can walkthrough from the beginning and click the « Expand solution » folds for each of the task.</p>
+<p>Also, if you'd like to get reactions on your code snippets or give any feedback on this post, use <code>#cwfpractice1</code> on Twitter (or flick me an email). You can expect more of these kinds of guided challenges in the future.<br>
+I now leave you with a series of improvements you could bring to this project if you're willing to dig deeper.</p>
+<h2 id="going-further"><a class="header-anchor" href="#going-further">#</a>Going further</h2>
+<p>Want more ideas to keep practicing? Extend this project by allowing the user to:</p>
+<ul>
+<li>create new columns (e.g. by clicking a button)</li>
+<li>edit existing list entries</li>
+<li>move around an entry from a list to a different list</li>
+</ul>
+<!-- TODO
+Great X! You completed all our tasks. You can now walkthrough from the beginning and compare your solution with the ones from the author.
+Also, your work will now be available to others. Two other people completed this before you. Feel free to see their solutions and leave comments to start collaborating!
+
+Don't want this to be public? Just tick the following box and you'll be covered.
+Well done on the practice. A natural next step from here would be ......  FIXME
+-->
+</div></article></div></main><footer><div class="paginator"><a href="/Iterate-hackerspace-the-birth-of-a-resilient-tech-community/" class="next">NEXT</a></div><div class="copyright"><p>Made using <a href="https://hexo.io/">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo">hexo-theme-apollo</a>. Hosted on <a href="https://github.com/niwolive/codewithflair.org">Github</a>.</p></div></footer></div></body></html>
