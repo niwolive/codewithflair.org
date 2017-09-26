@@ -20463,7 +20463,7 @@ var _user$project$Resume$aside = function () {
 							_0: _mdgriffith$style_elements$Element_Attributes$center,
 							_1: {ctor: '[]'}
 						},
-						_mdgriffith$style_elements$Element$text('JUNIOR APPLICATION ENGINEER')),
+						_mdgriffith$style_elements$Element$text('JUNIOR SOFTWARE ENGINEER')),
 					_1: {
 						ctor: '::',
 						_0: A3(
